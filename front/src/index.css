@@ -1,0 +1,133 @@
+@import url("https://fonts.googleapis.com/css2?family=Sofia+Sans+Condensed:ital,wght@0,1..1000;1,1..1000&display=swap");
+
+:root {
+    font-family: "Sofia Sans Condensed", Avenir, Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-size: 1rem;
+    font-weight: 400;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    --col-timber: #d7cdcc;
+    --col-grey: #59656f;
+    --col-plum: #9c528b;
+    --col-white: #eff6ee;
+    --col-black: #1d1e2c;
+    --col-red: #f02d3a;
+    --col-blue: #9bc4cb;
+    --col-ton: #0099ec;
+
+    --header-height: 4rem;
+}
+
+* {
+    font-family: "Sofia Sans Condensed", Avenir, Helvetica, Arial, sans-serif;
+
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+    color: var(--col-black);
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+*:focus {
+    outline: none;
+}
+
+html {
+    background-color: var(--col-white);
+}
+
+html,
+body,
+#root {
+    height: 100vh;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+}
+
+h1 {
+    font-weight: 700;
+    font-size: 2.75rem;
+    line-height: 100%;
+    letter-spacing: 0px;
+    text-transform: uppercase;
+}
+
+h2 {
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 100%;
+    letter-spacing: 0px;
+    text-transform: uppercase;
+}
+
+h3 {
+    font-weight: 700;
+    font-size: 1.75rem;
+    line-height: 100%;
+    letter-spacing: 0px;
+    text-transform: uppercase;
+}
+
+h4 {
+    font-weight: 700;
+    font-size: 1.5rem;
+    line-height: 100%;
+    letter-spacing: 0px;
+    text-transform: uppercase;
+}
+
+h5 {
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 100%;
+    letter-spacing: 0px;
+    text-transform: uppercase;
+}
+
+h6,
+* {
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 100%;
+    letter-spacing: 0px;
+    text-transform: uppercase;
+}
+
+span,
+p {
+    font-weight: 700;
+    font-size: 0.75rem;
+    line-height: 100%;
+    letter-spacing: 0px;
+    text-transform: uppercase;
+}
+
+button {
+    background-color: #ffffff08;
+    border-radius: 4px;
+}
+
+button,
+a {
+    cursor: pointer;
+}
+
+button:active,
+button:hover {
+    filter: brightness(0.8);
+}
+
+button:disabled {
+    opacity: 0.4;
+}

@@ -1,24 +1,31 @@
 import { Message, MessageRelaxed, Slice } from "@ton/core";
 import {
+    TEXT_COMMENT_OPCODE,
     JETTON_EXCESSES_OPCODE,
     JETTON_INTERNAL_TRANSFER_OPCODE,
     JETTON_TRANSFER_NOTIFICATION_OPCODE,
     JETTON_TRANSFER_OPCODE,
-    WALLET_SIGNED_EXTERNAL
-} from "../opcodes";
-import { loadJettonExcessesMessageBody } from "./jetton/jetton-excesses";
-import { loadJettonInternalTransferMessageBody } from "./jetton/jetton-internal-transfer";
-import { loadJettonTransferMessageBody } from "./jetton/jetton-transfer";
-import { loadJettonTransferNotificationMessageBody } from "./jetton/jetton-transfer-notification";
+    WALLET_SIGNED_EXTERNAL_OPCODE,
+    NFT_TRANSFER_OPCODE
+} from "../lib/opcodes";
+import { loadJettonExcessesMsgBody } from "./jetton/jetton-excesses";
+import { loadJettonInternalTransferMsgBody } from "./jetton/jetton-internal-transfer";
+import { loadJettonTransferMsgBody } from "./jetton/jetton-transfer";
+import { loadJettonTransferNotificationMsgBody } from "./jetton/jetton-transfer-notification";
 import { LoadedMessage, MessageBody } from "./types";
-import { loadWalletExternalSignedMessageBody } from "./wallet/wallet-external-signed";
+import { loadWalletExternalSignedMsgBody } from "./wallet/wallet-external-signed";
+import { logger } from "../../common/logger";
+import { loadTextComment } from "./general/loadTextComment";
+import { loadNftTransferMsgBody } from "./nft/nft-transfer";
 
 const opCodeLoaderMap: Record<number, (slice: Slice) => MessageBody> = {
-    [JETTON_EXCESSES_OPCODE]: loadJettonExcessesMessageBody,
-    [JETTON_INTERNAL_TRANSFER_OPCODE]: loadJettonInternalTransferMessageBody,
-    [JETTON_TRANSFER_OPCODE]: loadJettonTransferMessageBody,
-    [JETTON_TRANSFER_NOTIFICATION_OPCODE]: loadJettonTransferNotificationMessageBody,
-    [WALLET_SIGNED_EXTERNAL]: loadWalletExternalSignedMessageBody
+    [JETTON_EXCESSES_OPCODE]: loadJettonExcessesMsgBody,
+    [JETTON_INTERNAL_TRANSFER_OPCODE]: loadJettonInternalTransferMsgBody,
+    [JETTON_TRANSFER_OPCODE]: loadJettonTransferMsgBody,
+    [JETTON_TRANSFER_NOTIFICATION_OPCODE]: loadJettonTransferNotificationMsgBody,
+    [WALLET_SIGNED_EXTERNAL_OPCODE]: loadWalletExternalSignedMsgBody,
+    [TEXT_COMMENT_OPCODE]: loadTextComment,
+    [NFT_TRANSFER_OPCODE]: loadNftTransferMsgBody
 };
 
 export function loadMessages(messages: Message[]) {
@@ -26,20 +33,32 @@ export function loadMessages(messages: Message[]) {
 }
 
 export function loadMessage<T extends Message | MessageRelaxed>(message: T): LoadedMessage<T> | undefined {
-    const opCode = message.body.beginParse().loadUint(32);
+    const slice = message.body.beginParse();
+    if (slice.remainingBits < 32) {
+        logger.info("mala");
+        return;
+    }
+    const opCode = slice.preloadUint(32);
 
     const loader = opCodeLoaderMap[opCode];
     if (!loader) {
-        console.log(`Unknown opcode: ${opCode}`);
+        logger.warn(`Unknown opcode: 0x${opCode.toString(16)}`, message.info.src);
         return undefined;
     }
 
-    return { ...message, body: loader(message.body.beginParse()) };
+    let body: MessageBody | undefined = undefined;
+
+    try {
+        body = loader(slice);
+    } catch {
+        logger.error(`failed to load message`);
+    }
+
+    return { ...message, opCode, body } as never as LoadedMessage<T>;
 }
 
 export function verifyOpCode<T extends number>(slice: Slice, expectedOpCode: T): T {
     const op = slice.loadUint(32);
-
     if (op !== expectedOpCode) {
         throw new Error(`Expected opcode: ${expectedOpCode.toString(16)}. Received: ${op}`);
     }

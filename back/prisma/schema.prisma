@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Block {
+  id                        Int     @id @default(autoincrement())
+  globalId                  Int
+  workchain                 Int
+  shard                     String
+  seqno                     Int
+  startLt                   BigInt
+  endLt                     BigInt
+  genUtime                  Int
+  rootHash                  String
+  fileHash                  String
+  version                   Int
+  flags                     Int
+  afterMerge                Boolean
+  afterSplit                Boolean
+  beforeSplit               Boolean
+  wantMerge                 Boolean
+  wantSplit                 Boolean
+  genValidatorListHashShort String
+  genCatchainSeqno          Int
+  minRefMcSeqno             Int
+  keyBlock                  Boolean
+  prevKeyBlockSeqno         Int
+  vertSeqNo                 Int
+
+  isCanonical Boolean @default(true)
+
+  masterBlockId Int?
+  masterBlock   Block?  @relation("MasterBlockShard", fields: [masterBlockId], references: [id], onDelete: Cascade)
+  shardBlocks   Block[] @relation("MasterBlockShard")
+
+  transactions Transaction[]
+
+  @@unique([workchain, shard, seqno, isCanonical])
+}
+
+model Transaction {
+  id                  Int     @id @default(autoincrement())
+  opCode              BigInt?
+  address             String
+  dest                String?
+  lt                  BigInt
+  hash                String
+  prevTransactionHash String
+  prevTransactionLt   BigInt
+  now                 Int
+  amount              BigInt
+  inMessage           Json?
+
+  blockId Int
+  block   Block @relation(fields: [blockId], references: [id], onDelete: Cascade)
+
+  accountId Int?
+  account   Account? @relation(fields: [accountId], references: [id])
+
+  @@index([blockId])
+  @@index([accountId])
+}
+
+model Account {
+  id      Int    @id @default(autoincrement())
+  address String @unique
+  balance String
+
+  firstTx Int
+
+  transactions Transaction[]
+}

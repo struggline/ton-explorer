@@ -1,9 +1,13 @@
 import { Slice } from "@ton/core";
-import { JETTON_INTERNAL_TRANSFER_OPCODE } from "../../opcodes";
+import { JETTON_INTERNAL_TRANSFER_OPCODE } from "../../lib/opcodes";
 import { JettonInternalTransferMessageBody } from "./types";
 import { verifyOpCode } from "..";
 
-export function loadJettonInternalTransferMessageBody(slice: Slice): JettonInternalTransferMessageBody {
+/*
+internal_transfer query_id:uint64 amount:VarUInteger 16 from:MsgAddress response_address:MsgAddress
+                  forward_ton_amount:VarUInteger 16 forward_payload:Either Cell ^Cell = InternalMsgBody
+*/
+export function loadJettonInternalTransferMsgBody(slice: Slice): JettonInternalTransferMessageBody {
     const op = verifyOpCode(slice, JETTON_INTERNAL_TRANSFER_OPCODE);
 
     const queryId = slice.loadUintBig(64);

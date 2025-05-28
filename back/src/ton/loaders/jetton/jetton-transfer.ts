@@ -1,9 +1,9 @@
 import { Slice } from "@ton/core";
 import { verifyOpCode } from "..";
-import { JETTON_TRANSFER_OPCODE } from "../../opcodes";
+import { JETTON_TRANSFER_OPCODE } from "../../lib/opcodes";
 import { JettonTransferMessageBody } from "./types";
 
-export function loadJettonTransferMessageBody(slice: Slice): JettonTransferMessageBody {
+export function loadJettonTransferMsgBody(slice: Slice): JettonTransferMessageBody {
     const op = verifyOpCode(slice, JETTON_TRANSFER_OPCODE);
 
     const queryId = slice.loadUintBig(64);

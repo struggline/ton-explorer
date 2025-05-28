@@ -1,10 +1,10 @@
 import { loadOutList, Slice } from "@ton/core";
 import { loadMessage, verifyOpCode } from "..";
-import { WALLET_SIGNED_EXTERNAL } from "../../opcodes";
+import { WALLET_SIGNED_EXTERNAL_OPCODE } from "../../lib/opcodes";
 import { WalletExternalSignedMessageBody } from "./types";
 
-export function loadWalletExternalSignedMessageBody(slice: Slice): WalletExternalSignedMessageBody {
-    const op = verifyOpCode(slice, WALLET_SIGNED_EXTERNAL);
+export function loadWalletExternalSignedMsgBody(slice: Slice): WalletExternalSignedMessageBody {
+    const op = verifyOpCode(slice, WALLET_SIGNED_EXTERNAL_OPCODE);
 
     const walletId = slice.loadUint(32);
     const validUntil = slice.loadUint(32);

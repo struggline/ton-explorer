@@ -1,0 +1,37 @@
+.form {
+    position: relative;
+}
+
+.input {
+    display: flex;
+
+    height: 100%;
+    width: 100%;
+    padding-inline: 10px;
+    border-radius: 6px;
+
+    background-color: transparent;
+    color: var(--col-black);
+
+    border: 2px solid var(--col-grey);
+    backdrop-filter: brightness(0.9);
+
+    text-transform: none;
+    font-weight: 400;
+}
+
+.input:focus {
+    border-color: var(--col-ton);
+}
+
+.error {
+    position: absolute;
+    bottom: 0;
+
+    transform: translateY(110%);
+    color: var(--col-red);
+}
+
+.errorInput {
+    border-color: var(--col-red) !important;
+}

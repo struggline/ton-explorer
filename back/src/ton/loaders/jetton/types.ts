@@ -4,7 +4,7 @@ import {
     JETTON_INTERNAL_TRANSFER_OPCODE,
     JETTON_TRANSFER_NOTIFICATION_OPCODE,
     JETTON_TRANSFER_OPCODE
-} from "../../opcodes";
+} from "../../lib/opcodes";
 
 export interface JettonExcessesMessageBody {
     op: typeof JETTON_EXCESSES_OPCODE;
